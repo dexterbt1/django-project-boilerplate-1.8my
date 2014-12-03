@@ -93,6 +93,7 @@ MEDIA_URL = '//' + MEDIA_URL_DOMAIN + MEDIA_URL_PATH
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
+STATIC_ROOT = env('WEBAPP_STATIC_ROOT', valuetype=str, required=True)
 STATIC_URL_DOMAIN = env('WEBAPP_STATIC_URL_DOMAIN', '', valuetype=str, required=True)
 STATIC_URL_PATH = env('WEBAPP_STATIC_URL_PATH', valuetype=str, required=True)
 STATIC_URL = '//' + STATIC_URL_DOMAIN + STATIC_URL_PATH

@@ -1,0 +1,33 @@
+[unix_http_server]
+file=/tmp/myproject.supervisord.sock
+
+[supervisord]
+logfile=/tmp/myproject.supervisord.log
+logfile_maxbytes=50MB
+logfile_backups=2
+loglevel=debug
+pidfile=/tmp/myproject.supervisord.pid
+nodaemon=false
+minfds=1024
+minprocs=200
+
+[rpcinterface:supervisor]
+supervisor.rpcinterface_factory = supervisor.rpcinterface:make_main_rpcinterface
+
+[supervisorctl]
+serverurl=unix:///tmp/myproject.supervisord.sock
+history_file=~/.myproject.sc_history
+
+
+; ===========================================================================
+
+[program:webapp_dev1]
+environment=DJANGO_SETTINGS_MODULE=webapp.settings,PYTHONPATH=.
+command=bash -c "source py/bin/activate && source tmp/webapp.env.source && cd webapp && exec gunicorn webapp.wsgi:application --bind=127.0.0.1:8931 --workers=4 --log-level=error"
+startretries=9999
+priority=1
+killasgroup = true
+redirect_stderr = true
+autorestart = true
+
+

@@ -17,6 +17,14 @@ structure this project provides.
     virtualenv py
     source py/bin/activate
     pip install -r requirements.pip
+
+### Stack and Tools
+
+- Django 1.7.x
+- MySQL
+- Lighttpd or Nginx
+- Gunicorn
+- Supervisord
     
 
 ### Motivation
@@ -27,7 +35,6 @@ a very basic generic project structure for starting Django Projects.
 
 ### TODO
 
-- Supervisord.conf
 - Dockerfile
 - Vagrantfile
 
