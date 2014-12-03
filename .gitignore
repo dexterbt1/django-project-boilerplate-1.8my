@@ -2,3 +2,4 @@
 *.vim
 *.pyc
 py/
+tmp/
