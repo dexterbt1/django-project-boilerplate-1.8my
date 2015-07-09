@@ -20,7 +20,7 @@ structure this project provides.
 
 ### Stack and Tools
 
-- Django 1.7.x
+- Django 1.8.x
 - MySQL
 - Lighttpd or Nginx
 - Gunicorn
