@@ -1,16 +1,16 @@
 """
-https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
-https://docs.djangoproject.com/en/1.7/topics/settings/
-https://docs.djangoproject.com/en/1.7/ref/settings/
+https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
+https://docs.djangoproject.com/en/1.8/topics/settings/
+https://docs.djangoproject.com/en/1.8/ref/settings/
 """
 # Django settings for webapp project.
 import os
-import sys
-import ast # py 2.6 only
+import ast  # py 2.6 only
 
-def env(key, default=None, valuetype=str, required=False):
+
+def env(key, default=None, valuetype=str, required=False, nullable=bool):
     if required and (key not in os.environ):
-        raise RuntimeError, u"Required environment setting %s not found" % key
+        raise RuntimeError(u"Required environment setting %s not found" % key)
     if valuetype == bool:
         # special handling of booleans: must be a valid python expr: True or False
         raw_val = default
@@ -19,16 +19,17 @@ def env(key, default=None, valuetype=str, required=False):
     else:
         raw_val = os.environ.get(key, default)
     val = valuetype(raw_val)
+    if nullable and (default is None) and (raw_val == default):
+        val = default
     return val
-
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 SECRET_KEY = env('WEBAPP_SECRET_KEY', required=True)
 
-DEBUG = env('WEBAPP_DEBUG', required=True)
+DEBUG = env('WEBAPP_DEBUG', valuetype=bool, required=True)
 
-TEMPLATE_DEBUG = env('WEBAPP_TEMPLATE_DEBUG', required=True)
+TEMPLATE_DEBUG = env('WEBAPP_TEMPLATE_DEBUG', valuetype=bool, required=True)
 
 MAIN_DOMAIN = env('WEBAPP_MAIN_DOMAIN', valuetype=unicode, required=True)
 
@@ -62,14 +63,18 @@ WSGI_APPLICATION = 'webapp.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',       
-        'NAME':         env('WEBAPP_DB_NAME', required=True),
-        'USER':         env('WEBAPP_DB_USER', required=True),
-        'PASSWORD':     env('WEBAPP_DB_PASS', required=True),
-        'HOST':         env('WEBAPP_DB_HOST', 'localhost'),
-        'PORT':         env('WEBAPP_DB_PORT', '3306'), 
+        'NAME': env('WEBAPP_DB_NAME', required=True),
+        'USER': env('WEBAPP_DB_USER', required=True),
+        'PASSWORD': env('WEBAPP_DB_PASS', required=True),
+        'HOST': env('WEBAPP_DB_HOST', 'localhost'),
+        'PORT': env('WEBAPP_DB_PORT', '3306'), 
         'OPTIONS': {
-            'init_command': 'SET storage_engine=INNODB, optimizer_switch="index_merge_intersection=off", character_set_connection=utf8, collation_connection=utf8_unicode_ci',
-            },
+            'sql_mode': 'TRADITIONAL',
+            'charset': 'utf8',
+            'init_command': 'SET storage_engine=INNODB,character_set_connection=utf8,'
+                            'collation_connection=utf8_bin,'
+                            'SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED',
+        },
 
     }
 }
@@ -149,6 +154,6 @@ ALLOWED_HOSTS = [
     MAIN_DOMAIN,
     MEDIA_URL_DOMAIN,
     STATIC_URL_DOMAIN,
-    ]
+]
 
 
